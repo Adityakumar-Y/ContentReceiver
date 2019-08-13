@@ -29,7 +29,7 @@ import java.security.Permission;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int PERMISSION_REQUEST_CALL_PHONE = 1;
-    private static final int PERMISSION_ALL= 2;
+    private static final int PERMISSION_ALL = 2;
     private static final String PREFS_FILE_NAME = "MyPrefs";
     private EditText etData;
     private Button btnShare, btnCall, btnAll;
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Manifest.permission.CAMERA,
         };
 
-        if(!hasPermissions(this, permissions)){
+        if (!hasPermissions(this, permissions)) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
         }
     }
@@ -134,16 +134,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startCallPhone() {
 
-        // Check for Android V23
+        // Check for Android V23 for Dangerous Permissions at Runtime
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+            // Check if permission previously granted
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                     != PackageManager.PERMISSION_GRANTED) {
+
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
                     // Permission denied without checking checkbox
                     // Show an explanation to user and then again request for permission
-
                     showExplanation();
 
                 } else {
@@ -220,10 +221,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(i);
     }
 
-    public static boolean hasPermissions(Context context, String... permissions){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context!=null && permissions!=null){
-            for(String permission: permissions){
-                if(ActivityCompat.checkSelfPermission(context, permission)!= PackageManager.PERMISSION_GRANTED){
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                     return false;
                 }
             }
