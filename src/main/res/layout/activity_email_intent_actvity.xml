@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    tools:context=".Activities.EmailIntentActvity">
+
+    <EditText
+        android:id="@+id/etAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/to_address"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/etCC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/to_cc"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/etBCC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/to_bcc"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/etSubject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_subject"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailSubject"
+        android:lines="2" />
+
+    <EditText
+        android:id="@+id/etMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_message"
+        android:imeOptions="actionDone"
+        android:lines="10" />
+
+    <TextView
+        android:id="@+id/tvFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp" />
+
+    <Button
+        android:id="@+id/btnSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_file"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnSendEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/send_email"
+        android:textSize="18sp" />
+
+</LinearLayout>

@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="16dp"
+    android:id="@+id/layout"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".Activities.MainActivity">
 
     <EditText
         android:id="@+id/etData"
@@ -24,7 +25,14 @@
 
     <Button
         android:id="@+id/btnCall"
-        android:text="Call"
+        android:text="Call Phone"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btnAll"
+        android:text="Call Multiple Permissions"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

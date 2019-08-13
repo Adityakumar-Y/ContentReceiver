@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="to_address">To : Address</string>
+    <string name="to_cc">To : CC</string>
+    <string name="to_bcc">To : BCC</string>
+    <string name="enter_subject">Enter Subject</string>
+    <string name="enter_message">Enter Message</string>
+    <string name="select_file">Select File</string>
+    <string name="send_email">Send Email</string>
+    <string name="call_access_required">Call Permission Required to perform this functionality</string>
+    <string name="ok">OK</string>
+    <string name="call_permission_granted">Granted Call Permission</string>
+    <string name="call_permission_denied">Denied Call Permission</string>
+    <string name="open_settings">Permission is disabled open using Settings</string>
+    <string name="service_start">Service Start</string>
+    <string name="service_stop">Service Stop</string>
 </resources>
