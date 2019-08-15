@@ -14,4 +14,7 @@
     <string name="open_settings">Permission is disabled open using Settings</string>
     <string name="service_start">Service Start</string>
     <string name="service_stop">Service Stop</string>
+    <string name="read_contacts_required">Read Contacts Permission Required</string>
+    <string name="read_contacts_permission_granted">Read Contatcs Permission Granted</string>
+    <string name="read_contacts_permission_denied">Read Contacts Permission Denied</string>
 </resources>
