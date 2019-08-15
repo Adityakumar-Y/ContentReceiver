@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.ContentProviderOperation;
@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.Activities.ContactActivity;
+import com.example.myapplication.Models.Contact;
+import com.example.myapplication.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class AddFragment extends Fragment implements View.OnClickListener {
     private FloatingActionButton fab;
     private EditText etName, etPhone;
     private Button btnSave;
+    private ArrayList contentProviderOperations = new ArrayList();
 
     @Nullable
     @Override
@@ -60,59 +63,7 @@ public class AddFragment extends Fragment implements View.OnClickListener {
         saveContact();
     }
 
-
-    /*private void requestForPermission() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CONTACTS)
-                == PackageManager.PERMISSION_GRANTED) {
-            saveContact();
-        } else {
-            checkPermission();
-        }
-    }
-
-
-    private void checkPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) getContext(), Manifest.permission.WRITE_CONTACTS)) {
-            // show UI part if you want here to show some rationale !!!
-            showExplanation();
-
-        } else {
-            if (PreferencesUtil.isFirstTimeAskingPermission(getContext(), Manifest.permission.WRITE_CONTACTS)) {
-                askPermissionFirst();
-            } else {
-                // Permission denied by checking checkbox
-                showSettings();
-            }
-        }
-    }
-
-    private void showSettings() {
-        Snackbar.make(view, R.string.open_settings,
-                Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Request the permission
-                startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                        Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
-            }
-        }).show();
-    }
-
-    private void showExplanation() {
-        // Request the permission
-        ActivityCompat.requestPermissions((Activity) getContext(),
-                new String[]{Manifest.permission.WRITE_CONTACTS},
-                PERMISSION_WRITE_CONTACTS);
-    }
-
-    private void askPermissionFirst() {
-        PreferencesUtil.firstTimeAskingPermission(getContext(), Manifest.permission.WRITE_CONTACTS, false);
-        ActivityCompat.requestPermissions((Activity) getContext(),
-                new String[]{Manifest.permission.WRITE_CONTACTS}, PERMISSION_WRITE_CONTACTS);
-    }
-*/
-
-    private void saveContact() {
+    public void saveContact() {
 
         String contactName = etName.getText().toString().trim();
         String contactPhone = etPhone.getText().toString().trim();
@@ -122,7 +73,18 @@ public class AddFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        ArrayList contentProviderOperations = new ArrayList();
+        insertContact(contactName, contactPhone);
+
+        ((ContactActivity) getActivity()).contactList.add(new Contact(contactName, contactPhone));
+        ((ContactActivity) getActivity()).contactAdapter.notifyDataSetChanged();
+
+        Toast.makeText(getContext(), "Contact Added Successfully :)", Toast.LENGTH_SHORT).show();
+
+        getActivity().getSupportFragmentManager().popBackStack();
+        ((ContactActivity)getActivity()).recyclerView.scrollToPosition(((ContactActivity)getActivity()).contactAdapter.getItemCount() - 1);
+    }
+
+    private void insertContact(String contactName, String contactPhone) {
         //insert raw contact using RawContacts.CONTENT_URI
         contentProviderOperations.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
                 .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
@@ -149,14 +111,6 @@ public class AddFragment extends Fragment implements View.OnClickListener {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-        ((ContactActivity) getActivity()).contactList.add(new Contact(contactName, contactPhone));
-        ((ContactActivity) getActivity()).contactAdapter.notifyDataSetChanged();
-
-        Toast.makeText(getContext(), "Contact Added Successfully :)", Toast.LENGTH_SHORT).show();
-
-        getActivity().getSupportFragmentManager().popBackStack();
-        ((ContactActivity)getActivity()).recyclerView.scrollToPosition(((ContactActivity)getActivity()).contactAdapter.getItemCount() - 1);
     }
 
 

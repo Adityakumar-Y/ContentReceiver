@@ -22,11 +22,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.AddFragment;
+import com.example.myapplication.Fragments.AddFragment;
 import com.example.myapplication.BuildConfig;
-import com.example.myapplication.Contact;
-import com.example.myapplication.ContactAdapter;
+import com.example.myapplication.Models.Contact;
+import com.example.myapplication.Adapters.ContactAdapter;
 import com.example.myapplication.R;
+import com.example.myapplication.Utils.MyPermissions;
 import com.example.myapplication.Utils.PreferencesUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,13 +37,14 @@ import java.util.List;
 
 public class ContactActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int PERMISSION_READ_CONTACTS = 1;
     public RecyclerView recyclerView;
     private FloatingActionButton fab;
     private View mLayout;
     public ContactAdapter contactAdapter;
     public List<Contact> contactList = new ArrayList<>();
     public ContentResolver resolver;
+    private String permissionName;
+    private int permissionCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,28 +54,41 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
 
         init();
         setupAdapter();
-        requestForPermission();
+        requestForPermission(1);
 
 
     }
 
-    private void requestForPermission() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
-                == PackageManager.PERMISSION_GRANTED) {
-            readContact();
-        } else {
-            checkPermission();
+    private void requestForPermission(int permissionCode) {
+        switch (permissionCode) {
+            case 1:
+                permissionName = Manifest.permission.READ_CONTACTS;
+                if (ActivityCompat.checkSelfPermission(this, permissionName) == PackageManager.PERMISSION_GRANTED) {
+                    readContact();
+                } else {
+                    checkPermission(permissionCode, permissionName);
+                }
+                break;
+            /*case 2:
+                permissionName = Manifest.permission.CALL_PHONE;
+                if (ActivityCompat.checkSelfPermission(this, permissionName) == PackageManager.PERMISSION_GRANTED) {
+                    gotoAddFragment();
+                } else {
+                    checkPermission(permissionCode, permissionName);
+                }
+                break;*/
         }
+
     }
 
-    private void checkPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_CONTACTS)) {
+    private void checkPermission(int permissionCode, String permissionName) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissionName)) {
             // show UI part if you want here to show some rationale !!!
-            showExplanation();
+            MyPermissions.showExplanation(this, permissionCode, permissionName);
 
         } else {
-            if (PreferencesUtil.isFirstTimeAskingPermission(this, Manifest.permission.READ_CONTACTS)) {
-                askPermissionFirst();
+            if (PreferencesUtil.isFirstTimeAskingPermission(this, permissionName)) {
+                MyPermissions.askPermissionFirst(this, permissionCode, permissionName);
             } else {
                 // Permission denied by checking checkbox
                 showSettings();
@@ -93,18 +108,6 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
         }).show();
     }
 
-    private void showExplanation() {
-        // Request the permission
-        ActivityCompat.requestPermissions(ContactActivity.this,
-                new String[]{Manifest.permission.READ_CONTACTS},
-                PERMISSION_READ_CONTACTS);
-    }
-
-    private void askPermissionFirst() {
-        PreferencesUtil.firstTimeAskingPermission(this, Manifest.permission.READ_CONTACTS, false);
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_READ_CONTACTS);
-    }
 
     private void readContact() {
 
@@ -161,15 +164,35 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PERMISSION_READ_CONTACTS:
-                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            case 1:
+                if (grantResults.length==1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     readContact();
                 } else {
                     showAlertForRead();
                 }
                 break;
+            /*case 2:
+                if (grantResults.length==2 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    gotoAddFragment();
+                } else {
+                    showAlertForWrite();
+                }
+                break;*/
         }
     }
+
+    /*private void showAlertForWrite() {
+        new AlertDialog.Builder(this)
+                .setTitle("Permission Required")
+                .setMessage("Write SMS Permission Required")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int i) {
+                        requestForPermission(2);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }*/
 
     public void showAlertForRead() {
         new AlertDialog.Builder(this)
@@ -177,7 +200,7 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
                 .setMessage("Permission Required to open this app")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int i) {
-                        requestForPermission();
+                        requestForPermission(1);
                     }
                 })
 
@@ -192,6 +215,11 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
+        /*requestForPermission(2);*/
+        gotoAddFragment();
+    }
+
+    private void gotoAddFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_container, new AddFragment())
                 .addToBackStack(null)
@@ -203,12 +231,12 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
     protected void onRestart() {
         Log.d("Activity", "Restart");
         super.onRestart();
-        requestForPermission();
+        requestForPermission(1);
     }
 
     public void hideKeyPad() {
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),0);
+        imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
     }
 
 
